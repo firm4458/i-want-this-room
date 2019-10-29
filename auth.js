@@ -98,9 +98,29 @@ const login = function(req, res){
     })
 }
 
+const signup = function(req,res){
+    db.collection("users").insertOne({
+        _id: req.body.username,
+        name: req.body.name,
+        password: req.body.password,
+        isAdmin: false
+    }, (err, result) => {
+        if (err) {
+            log(err.toString())
+            return res.send({success: false,username: req.body.username})
+        }
+        return res.send({
+            success: true,
+            username: result.ops[0]._id,
+            name: result.ops[0].name
+        })
+    })
+}
+
 module.exports = {
     login: login,
     requireJWTAuth: requireJWTAuth,
     requireAdmin: requireAdmin,
-    SECRET: SECRET
+    SECRET: SECRET,
+    signup: signup
 }
