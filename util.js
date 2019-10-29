@@ -1,4 +1,4 @@
-dev = true
+dev = false
 observedFuncs = ['requireJWTAuth','login','logRequests']
 
 const log = function(...msg){

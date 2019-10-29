@@ -25,7 +25,16 @@ const getUsers = function(req,res){
     });
 }
 
+const createRoom = function(req,res){
+    log('called')
+    if(!req.body.name) return res.status(400).send('name cant be blank')
+    db.collection('rooms').insertOne({_id: req.body.name},(err,result)=>{
+        if(err) return res.status(500).send(err.toString())
+        return res.send('ok')
+    })
+}
 module.exports = {
     getUsers: getUsers,
-    queryReservations: queryReservations
+    queryReservations: queryReservations,
+    createRoom: createRoom
 }
