@@ -170,10 +170,23 @@ const getUserReservations = function(req,res){
     })
 }
 
+const checkRoom = function(req,res,next){
+    rooms = new Set()
+    for(i=0;i<req.body.length;++i) rooms.add(req.body[i].room)
+    rooms = Array.from(rooms)
+    for(i=0;i<rooms.length;++i) rooms[i] = {_id: rooms[i]}
+    db.collection('rooms').find({$or:rooms}).toArray((err,result)=>{
+        if(err) res.status(500).send(err.toString())
+        if(result.length==rooms.length) next()
+        else res.status(400).send('Unknown rooms')
+    })
+}
+
 module.exports = {
     getTimeslots: getTimeslots,
     reserve: reserve,
-    checkDataValidity,
+    checkDataValidity : checkDataValidity,
+    checkRoom: checkRoom,
     free: free,
     getUserReservations: getUserReservations
 }
