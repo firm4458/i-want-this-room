@@ -35,6 +35,12 @@ MongoClient.connect("mongodb://localhost:27017", { useUnifiedTopology: true },(e
     app.post('/reserve',[authServices.requireJWTAuth,rservServices.checkDataValidity,rservServices.checkRoom],rservServices.reserve)
     app.patch('/free',[authServices.requireJWTAuth,rservServices.checkDataValidity],rservServices.free)
     app.get('/userReservations',authServices.requireJWTAuth,rservServices.getUserReservations)
+    app.get('/rooms',(req,res)=>{
+        db.collection('rooms').find().toArray((err,result)=>{
+            if(err) return res.status(500).send(err.toString)
+            return res.send(result)
+        })
+    })
 
     app.get('/admin/users',[authServices.requireJWTAuth,authServices.requireAdmin],adminServices.getUsers)
     app.post('/admin/createRoom',[authServices.requireJWTAuth,authServices.requireAdmin],adminServices.createRoom)
