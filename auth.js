@@ -111,7 +111,7 @@ const signup = function(req,res){
         }
         return res.send({
             success: true,
-            username: result.ops[0]._id,
+            username: req.body.username,
             name: result.ops[0].name
         })
     })
