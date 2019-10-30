@@ -38,7 +38,9 @@ MongoClient.connect("mongodb://localhost:27017", { useUnifiedTopology: true },(e
     app.get('/rooms',(req,res)=>{
         db.collection('rooms').find().toArray((err,result)=>{
             if(err) return res.status(500).send(err.toString)
-            return res.send(result)
+            arr = []
+            for(i=0;i<result.length;++i)arr.push({name: result[i]._id})
+            return res.send(arr)
         })
     })
 
