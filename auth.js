@@ -91,7 +91,7 @@ const login = function(req, res){
                 // res == true
                 if(match){
                     log('success')
-                    res.send({success: true, username:req.body.username, token: jwt.sign({
+                    res.send({success: true, username:result.name, token: jwt.sign({
                         sub: req.body.username,
                         name: result.name,
                     },SECRET,{expiresIn: '1d'})});

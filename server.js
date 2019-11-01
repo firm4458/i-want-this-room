@@ -62,7 +62,7 @@ MongoClient.connect("mongodb://localhost:27017", { useUnifiedTopology: true },(e
     app.get('/admin/users',[authServices.requireJWTAuth,authServices.requireAdmin],adminServices.getUsers)
     app.post('/admin/createRoom',[authServices.requireJWTAuth,authServices.requireAdmin],adminServices.createRoom)
     app.post('/admin/queryReservations',[authServices.requireJWTAuth,authServices.requireAdmin], adminServices.queryReservations)
-	
+	app.delete('/admin/deleteRoom',[authServices.requireJWTAuth,authServices.requireAdmin],adminServices.deleteRoom)
    app.listen(3000,()=>{
         console.log('listening on port 3000');
     })

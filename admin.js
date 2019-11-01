@@ -33,8 +33,16 @@ const createRoom = function(req,res){
         return res.send('ok')
     })
 }
+
+const deleteRoom = function(req,res){
+    db.collection('rooms').deleteOne({_id:req.body.name},(err,result)){
+        if(err) return res.status(500).send(err.toString())
+        return res.send('ok')
+    }
+}
 module.exports = {
     getUsers: getUsers,
     queryReservations: queryReservations,
-    createRoom: createRoom
+    createRoom: createRoom,
+    deleteRoom: deleteRoom
 }
