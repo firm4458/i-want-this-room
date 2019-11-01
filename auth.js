@@ -1,6 +1,8 @@
 const jwt = require('jsonwebtoken')
 const log = require('./util.js').log
 const SECRET = "secretkey"
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 const requireJWTAuth = function(req,res,next){
 
@@ -84,37 +86,48 @@ const login = function(req, res){
             log('Username not found') 
             return res.send({success:false, token: null})   
         }
-        else if(req.body.password==result.password) {
-            log('success')
-            res.send({success: true, username:req.body.username, token: jwt.sign({
-                sub: req.body.username,
-                name: result.name,
-            },SECRET,{expiresIn: '1d'})});
-        }
         else {
-            log('Wrong password')
-            return res.send({success:false, token:null})
+            bcrypt.compare(req.body.password, result.password, function(err, match) {
+                // res == true
+                if(match){
+                    log('success')
+                    res.send({success: true, username:req.body.username, token: jwt.sign({
+                        sub: req.body.username,
+                        name: result.name,
+                    },SECRET,{expiresIn: '1d'})});
+                }
+                else{
+                    log('Wrong password')
+                    return res.send({success:false, token:null})
+                }
+            });
+            
         }
     })
 }
 
 const signup = function(req,res){
-    db.collection("users").insertOne({
-        _id: req.body.username,
-        name: req.body.name,
-        password: req.body.password,
-        isAdmin: false
-    }, (err, result) => {
-        if (err) {
-            log(err.toString())
-            return res.send({success: false,username: req.body.username})
-        }
-        return res.send({
-            success: true,
-            username: req.body.username,
-            name: result.ops[0].name
-        })
-    })
+    bcrypt.genSalt(saltRounds, function(err, salt) {
+        bcrypt.hash(req.body.password, salt, function(err, hash) {
+            db.collection("users").insertOne({
+                _id: req.body.username,
+                name: req.body.name,
+                password: hash,
+                isAdmin: false
+            }, (err, result) => {
+                if (err) {
+                    log(err.toString())
+                    return res.send({success: false,username: req.body.username})
+                }
+                return res.send({
+                    success: true,
+                    username: req.body.username,
+                    name: result.ops[0].name
+                })
+            })
+        });
+    });
+    
 }
 
 module.exports = {

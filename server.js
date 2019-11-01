@@ -57,6 +57,7 @@ MongoClient.connect("mongodb://localhost:27017", { useUnifiedTopology: true },(e
             res.send(result)
         })
     })
+    app.get('/')
 
     app.get('/admin/users',[authServices.requireJWTAuth,authServices.requireAdmin],adminServices.getUsers)
     app.post('/admin/createRoom',[authServices.requireJWTAuth,authServices.requireAdmin],adminServices.createRoom)
